@@ -54,8 +54,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = styled.button<ButtonProps>`
-  ${({ size }) => sizes[size || "medium"]}
-  ${({ variation }) => variations[variation || "primary"]}
+  ${(props) => sizes[props.size || "medium"]}
+  ${(props) => variations[props.variation || "primary"]}
   border: none;
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);
