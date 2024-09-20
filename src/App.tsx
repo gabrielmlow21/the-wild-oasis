@@ -9,7 +9,7 @@ import Account from "./pages/Account";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 
-const App = () => {
+export default function App() {
   return (
     <>
       <GlobalStyles />
@@ -28,6 +28,4 @@ const App = () => {
       </BrowserRouter>
     </>
   );
-};
-
-export default App;
+}
