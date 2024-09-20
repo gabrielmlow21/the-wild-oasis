@@ -47,3 +47,19 @@ const variations = {
     }
   `,
 };
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  size?: keyof typeof sizes;
+  variation?: keyof typeof variations;
+}
+
+const Button = styled.button<ButtonProps>`
+  ${({ size }) => sizes[size || "medium"]}
+  ${({ variation }) => variations[variation || "primary"]}
+  border: none;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+`;
+
+export default Button;
