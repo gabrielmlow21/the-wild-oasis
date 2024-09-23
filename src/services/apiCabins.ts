@@ -13,13 +13,9 @@ export async function getCabins(): Promise<Cabin[]> {
 }
 
 export async function deleteCabin(id: number) {
-  const { error } = await supabase
-    .from("cabins")
-    .delete()
-    .eq("some_column", id);
+  const { error } = await supabase.from("cabins").delete().eq("id", id);
 
   if (error) {
     console.error("Error deleting cabin:", error);
-    return null;
   }
 }
