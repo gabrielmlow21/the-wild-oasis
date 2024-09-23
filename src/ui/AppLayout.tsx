@@ -15,13 +15,23 @@ const StyledAppLayout = styled.div`
   height: 100vh;
 `;
 
+const StyledContainer = styled.div`
+  max-width: 120rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3.2rem;
+`;
+
 export default function AppLayout() {
   return (
     <StyledAppLayout>
       <Header />
       <Sidebar />
       <StyledMain>
-        <Outlet />
+        <StyledContainer>
+          <Outlet />
+        </StyledContainer>
       </StyledMain>
     </StyledAppLayout>
   );
