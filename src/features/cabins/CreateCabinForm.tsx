@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
 import FormRow from "../../ui/FormRow";
+import FileInput from "../../ui/FileInput";
 
 function CreateCabinForm() {
   const { register, handleSubmit, reset, getValues, formState } =
@@ -83,10 +84,10 @@ function CreateCabinForm() {
       </FormRow>
 
       <FormRow label="Cabin photo">
-        <Input
-          type="number"
-          id="regular_price"
-          {...register("regular_price", { required: "This field is required" })}
+        <FileInput
+          id="image"
+          accept="image/*"
+          {...register("image", { required: "Image is required" })}
         />
       </FormRow>
 
