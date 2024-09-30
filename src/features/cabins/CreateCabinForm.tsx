@@ -1,3 +1,5 @@
+import { useCreateCabin } from "./useCreateCabin";
+
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import Button from "../../ui/Button";
@@ -6,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { Cabin } from "../../types/cabin";
 import FormRow from "../../ui/FormRow";
 import FileInput from "../../ui/FileInput";
-import { useCreateCabin } from "./useCreateCabin";
 
 function CreateCabinForm() {
   const { register, handleSubmit, reset, getValues, formState } =
