@@ -9,18 +9,26 @@ import { Cabin } from "../../types/cabin";
 import FormRow from "../../ui/FormRow";
 import FileInput from "../../ui/FileInput";
 
-function CreateCabinForm() {
+function CreateCabinForm({ onCloseModal }: { onCloseModal: () => void }) {
   const { register, handleSubmit, reset, getValues, formState } =
     useForm<Cabin>();
   const { errors } = formState;
   const { createCabin, isCreating } = useCreateCabin();
 
   function onSubmit(data: Cabin) {
-    createCabin(data, { onSuccess: () => reset() });
+    createCabin(data, {
+      onSuccess: () => {
+        reset();
+        onCloseModal();
+      },
+    });
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="Cabin name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -80,7 +88,7 @@ function CreateCabinForm() {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button variation="secondary" type="reset" onClick={onCloseModal}>
           Cancel
         </Button>
         <Button disabled={isCreating}>Add cabin</Button>
