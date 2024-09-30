@@ -43,6 +43,42 @@ export async function createCabin(newCabin: Cabin): Promise<Cabin[]> {
   return data;
 }
 
+export async function editCabin(newCabin: Cabin, id: number): Promise<Cabin[]> {
+  let newImageName = "";
+  let newImagePath = "";
+
+  if (newCabin.image instanceof FileList) {
+    newImageName = `${Math.random()}-${newCabin.image[0].name}`.replace(
+      /\//g,
+      ""
+    );
+    newImagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${newImageName}`;
+    const { error: storageError } = await supabase.storage
+      .from("cabin-images")
+      .upload(newImageName, newCabin.image[0]);
+    // Delete cabin if the image was not uploaded successfully
+    if (storageError) {
+      console.error(storageError);
+      throw new Error("New image could not be uploaded");
+    }
+  } else {
+    // no new image uploaded
+    newImagePath = newCabin.image;
+  }
+
+  const { data, error: updateError } = await supabase
+    .from("cabins")
+    .update([{ ...newCabin, image: newImagePath }])
+    .eq("id", id)
+    .select();
+  if (updateError) {
+    console.error("Cabin could not be updated:", updateError);
+    throw new Error("Cabin could not be created");
+  }
+
+  return data;
+}
+
 export async function deleteCabin(id: number) {
   const { error } = await supabase.from("cabins").delete().eq("id", id);
 
