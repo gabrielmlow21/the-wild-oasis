@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import { Cabin } from "../../types/cabin";
 import { formatCurrency } from "../../utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import EditCabinForm from "./EditCabinForm";
+import { useDeleteCabin } from "./useDeleteCabin";
 
 const TableRow = styled.div`
   display: grid;
@@ -48,6 +46,7 @@ const Discount = styled.div`
 
 export default function CabinRow({ cabin }: { cabin: Cabin }) {
   const [showForm, setShowForm] = useState(false);
+  const { deleteCabin, isDeleting } = useDeleteCabin();
 
   const {
     id,
@@ -58,31 +57,26 @@ export default function CabinRow({ cabin }: { cabin: Cabin }) {
     discount,
   } = cabin;
 
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending: isDeleting } = useMutation({
-    mutationFn: (id: number) => deleteCabin(id),
-    onSuccess: () => {
-      toast.success("Cabin successfully deleted");
-      // invalidate cache, make react query refetch
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  const imageUrl =
+    image instanceof FileList && image.length > 0
+      ? URL.createObjectURL(image[0])
+      : image;
 
   return (
     <>
       <TableRow role="row">
-        <Img src={image} />
+        <Img src={imageUrl as string} />
         <CabinName>{name}</CabinName>
         <div>Fits up to {maxCapacity} guests</div>
         <Price>{formatCurrency(regularPrice)}</Price>
-        <Discount>{formatCurrency(discount)}</Discount>
+        {discount ? (
+          <Discount>{formatCurrency(discount)}</Discount>
+        ) : (
+          <span>&mdash;</span>
+        )}
         <div>
           <button onClick={() => setShowForm((show) => !show)}>Edit</button>
-          <button onClick={() => mutate(id)} disabled={isDeleting}>
+          <button onClick={() => deleteCabin(id)} disabled={isDeleting}>
             Delete
           </button>
         </div>
