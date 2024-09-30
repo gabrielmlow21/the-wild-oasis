@@ -97,7 +97,10 @@ export default function CabinRow({ cabin }: { cabin: Cabin }) {
           <button onClick={() => setShowForm((show) => !show)}>
             <HiPencil />
           </button>
-          <button onClick={() => deleteCabin(id)} disabled={isDeleting}>
+          <button
+            onClick={() => id !== undefined && deleteCabin(id)}
+            disabled={isDeleting}
+          >
             <HiTrash />
           </button>
         </div>
