@@ -45,7 +45,10 @@ export async function createCabin(newCabin: Cabin): Promise<Cabin[]> {
   return data;
 }
 
-export async function editCabin(newCabin: Cabin, id: number): Promise<Cabin[]> {
+export async function updateCabin(
+  newCabin: Cabin,
+  id: number
+): Promise<Cabin[]> {
   let newImagePath = "";
 
   if (newCabin.image instanceof FileList) {

@@ -1,4 +1,4 @@
-import { useEditCabin } from "./useEditCabin";
+import { useUpdateCabin } from "./useUpdateCabin";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -10,18 +10,19 @@ import FileInput from "../../ui/FileInput";
 import { useForm } from "react-hook-form";
 import { Cabin } from "../../types/cabin";
 
-export default function EditCabinForm({ cabinToEdit = {} as Cabin }) {
-  const { id: editId, ...editValues } = cabinToEdit;
+export default function UpdateCabinForm({ cabinToUpdate = {} as Cabin }) {
+  const { id: updateId, ...updateValues } = cabinToUpdate;
   const { register, handleSubmit, reset, getValues, formState } =
-    useForm<Cabin>({ defaultValues: editValues });
+    useForm<Cabin>({ defaultValues: updateValues });
   const { errors } = formState;
-  const { editCabin, isEditing } = useEditCabin();
+  const { updateCabin, isUpdating } = useUpdateCabin();
 
   function onSubmit(data: Cabin) {
-    editCabin(
-      { newCabinData: data, id: editId },
-      { onSuccess: (newCabinData) => reset(newCabinData[0]) }
-    );
+    updateId !== undefined &&
+      updateCabin(
+        { newCabinData: data, id: updateId },
+        { onSuccess: (newCabinData) => reset(newCabinData[0]) }
+      );
   }
 
   return (
@@ -30,7 +31,7 @@ export default function EditCabinForm({ cabinToEdit = {} as Cabin }) {
         <Input
           type="text"
           id="name"
-          disabled={isEditing}
+          disabled={isUpdating}
           {...register("name", { required: "This field is required" })}
         />
       </FormRow>
@@ -39,7 +40,7 @@ export default function EditCabinForm({ cabinToEdit = {} as Cabin }) {
         <Input
           type="number"
           id="max_capacity"
-          disabled={isEditing}
+          disabled={isUpdating}
           {...register("max_capacity", { required: "This field is required" })}
         />
       </FormRow>
@@ -48,7 +49,7 @@ export default function EditCabinForm({ cabinToEdit = {} as Cabin }) {
         <Input
           type="number"
           id="regular_price"
-          disabled={isEditing}
+          disabled={isUpdating}
           {...register("regular_price", { required: "This field is required" })}
         />
       </FormRow>
@@ -57,7 +58,7 @@ export default function EditCabinForm({ cabinToEdit = {} as Cabin }) {
         <Input
           type="number"
           id="discount"
-          disabled={isEditing}
+          disabled={isUpdating}
           defaultValue={0}
           {...register("discount", {
             required: "This field is required",
@@ -73,7 +74,7 @@ export default function EditCabinForm({ cabinToEdit = {} as Cabin }) {
         error={errors?.description?.message}
       >
         <Textarea
-          disabled={isEditing}
+          disabled={isUpdating}
           id="description"
           defaultValue=""
           {...register("description", { required: "This field is required" })}
@@ -83,7 +84,7 @@ export default function EditCabinForm({ cabinToEdit = {} as Cabin }) {
       <FormRow label="Cabin photo">
         <FileInput
           id="image"
-          disabled={isEditing}
+          disabled={isUpdating}
           accept="image/*"
           {...register("image")}
         />
@@ -94,7 +95,7 @@ export default function EditCabinForm({ cabinToEdit = {} as Cabin }) {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isEditing}>Edit cabin</Button>
+        <Button disabled={isUpdating}>Edit cabin</Button>
       </FormRow>
     </Form>
   );

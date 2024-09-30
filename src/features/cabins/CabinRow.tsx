@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Cabin } from "../../types/cabin";
 import { formatCurrency } from "../../utils/helpers";
 import { useState } from "react";
-import EditCabinForm from "./EditCabinForm";
+import UpdateCabinForm from "./UpdateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { useCreateCabin } from "./useCreateCabin";
@@ -105,7 +105,7 @@ export default function CabinRow({ cabin }: { cabin: Cabin }) {
           </button>
         </div>
       </TableRow>
-      {showForm && <EditCabinForm cabinToEdit={cabin} />}
+      {showForm && <UpdateCabinForm cabinToUpdate={cabin} />}
     </>
   );
 }
