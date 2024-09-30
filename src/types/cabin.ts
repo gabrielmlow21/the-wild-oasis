@@ -1,5 +1,5 @@
 export type Cabin = {
-  id: number;
+  id?: number;
   name: string;
   max_capacity: number;
   regular_price: number;
