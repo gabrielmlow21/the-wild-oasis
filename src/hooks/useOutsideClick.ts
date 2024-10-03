@@ -1,10 +1,10 @@
-import { useEffect, useRef, MutableRefObject } from "react";
+import { useEffect, useRef, RefObject } from "react";
 
 export function useOutsideClick(
   handler: () => void,
   listenCapturing: boolean = true
-): MutableRefObject<HTMLElement | null> {
-  const ref = useRef<HTMLElement | null>(null);
+): RefObject<HTMLDivElement> {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(
     function () {
