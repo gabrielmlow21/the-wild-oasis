@@ -106,12 +106,12 @@ export default function CabinRow({ cabin }: { cabin: Cabin }) {
         </Modal>
 
         <Modal>
-          <Modal.Open opens="edit">
+          <Modal.Open opens="delete">
             <button disabled={isDeleting}>
               <HiTrash />
             </button>
           </Modal.Open>
-          <Modal.Window name="edit">
+          <Modal.Window name="delete">
             <ConfirmDelete
               resourceName="cabins"
               disabled={isDeleting}
