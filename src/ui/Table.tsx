@@ -1,3 +1,4 @@
+import { createContext, useContext, ReactNode } from "react";
 import styled from "styled-components";
 
 const StyledTable = styled.div`
@@ -9,7 +10,9 @@ const StyledTable = styled.div`
   overflow: hidden;
 `;
 
-const CommonRow = styled.div`
+const CommonRow = styled.div<{
+  columns: string;
+}>`
   display: grid;
   grid-template-columns: ${(props) => props.columns};
   column-gap: 2.4rem;
@@ -58,3 +61,66 @@ const Empty = styled.p`
   text-align: center;
   margin: 2.4rem;
 `;
+
+const TableContext = createContext<
+  | {
+      columns: string;
+    }
+  | undefined
+>(undefined);
+
+export default function Table({
+  columns,
+  children,
+}: {
+  columns: string;
+  children: ReactNode;
+}) {
+  return (
+    <TableContext.Provider value={{ columns }}>
+      <StyledTable role="table">{children}</StyledTable>
+    </TableContext.Provider>
+  );
+}
+
+function Header({ children }: { children: ReactNode }) {
+  const context = useContext(TableContext);
+  if (!context) {
+    throw new Error("Row must be used within a TableContextProvider");
+  }
+  const { columns } = context;
+  return (
+    <StyledHeader role="row" columns={columns} as="header">
+      {children}
+    </StyledHeader>
+  );
+}
+
+function Row({ children }: { children: ReactNode }) {
+  const context = useContext(TableContext);
+  if (!context) {
+    throw new Error("Row must be used within a TableContextProvider");
+  }
+  const { columns } = context;
+  return (
+    <StyledRow role="row" columns={columns}>
+      {children}
+    </StyledRow>
+  );
+}
+
+function Body<T>({
+  data = [],
+  render,
+}: {
+  data: T[] | undefined;
+  render: (item: T) => React.ReactNode;
+}) {
+  if (!data.length) return <Empty>No data</Empty>;
+  return <StyledBody>{data.map(render)}</StyledBody>;
+}
+
+Table.Header = Header;
+Table.Row = Row;
+Table.Body = Body;
+Table.Footer = Footer;
