@@ -9,7 +9,7 @@ import { Cabin } from "../../types/cabin";
 import FormRow from "../../ui/FormRow";
 import FileInput from "../../ui/FileInput";
 
-function CreateCabinForm({ onCloseModal }: { onCloseModal: () => void }) {
+function CreateCabinForm({ onCloseModal }: { onCloseModal?: () => void }) {
   const { register, handleSubmit, reset, getValues, formState } =
     useForm<Cabin>();
   const { errors } = formState;
@@ -19,7 +19,7 @@ function CreateCabinForm({ onCloseModal }: { onCloseModal: () => void }) {
     createCabin(data, {
       onSuccess: () => {
         reset();
-        onCloseModal();
+        if (onCloseModal) onCloseModal(); // Only call onCloseModal if it is provided
       },
     });
   }
