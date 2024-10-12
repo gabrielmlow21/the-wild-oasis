@@ -118,7 +118,7 @@ function Window({ children, name }: { children: ReactNode; name: string }) {
         </Button>
         <div>
           {cloneElement(children as React.ReactElement, {
-            onCloseModal: () => close,
+            onCloseModal: close,
           })}
         </div>
       </StyledModal>
