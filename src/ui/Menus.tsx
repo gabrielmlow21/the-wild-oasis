@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import styled from "styled-components";
@@ -29,15 +29,20 @@ const StyledToggle = styled.button`
   }
 `;
 
-const StyledList = styled.ul`
+const StyledList = styled.ul<{
+  position: {
+    x: number;
+    y: number;
+  } | null;
+}>`
   position: fixed;
 
   background-color: var(--color-grey-0);
   box-shadow: var(--shadow-md);
   border-radius: var(--border-radius-md);
 
-  right: ${(props) => props.position.x}px;
-  top: ${(props) => props.position.y}px;
+  right: ${(props) => (props.position ? props.position.x : 0)}px;
+  top: ${(props) => (props.position ? props.position.y : 0)}px;
 `;
 
 const StyledButton = styled.button`
@@ -65,11 +70,24 @@ const StyledButton = styled.button`
   }
 `;
 
-const MenusContext = createContext();
+const MenusContext = createContext<
+  | {
+      openId: string;
+      close: () => void;
+      open: (name: string) => void;
+      position: { x: number; y: number } | null;
+      setPosition: React.Dispatch<
+        React.SetStateAction<{ x: number; y: number } | null>
+      >;
+    }
+  | undefined
+>(undefined);
 
-export default function Menus({ children }) {
+export default function Menus({ children }: { children: ReactNode }) {
   const [openId, setOpenId] = useState("");
-  const [position, setPosition] = useState(null);
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(
+    null
+  );
 
   const close = () => setOpenId("");
   const open = setOpenId;
@@ -83,19 +101,23 @@ export default function Menus({ children }) {
   );
 }
 
-function Toggle({ id }) {
-  const { openId, close, open, setPosition } = useContext(MenusContext);
+function Toggle({ id }: { id: string | undefined }) {
+  const context = useContext(MenusContext);
+  if (!context) {
+    throw new Error("Window must be used within a ModalProvider");
+  }
+  const { openId, close, open, setPosition } = context;
 
-  function handleClick(e) {
+  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-
-    const rect = e.target.closest("button").getBoundingClientRect();
+    const target = e.target as HTMLElement; // Type assertion here
+    const rect = target.closest("button")!.getBoundingClientRect();
     setPosition({
       x: window.innerWidth - rect.width - rect.x,
       y: rect.y + rect.height + 8,
     });
 
-    openId === "" || openId !== id ? open(id) : close();
+    if (id) openId === "" || openId !== id ? open(id) : close();
   }
 
   return (
@@ -105,8 +127,19 @@ function Toggle({ id }) {
   );
 }
 
-function List({ id, children }) {
-  const { openId, position, close } = useContext(MenusContext);
+function List({
+  id,
+  children,
+}: {
+  id: string | undefined;
+  children: ReactNode;
+}) {
+  const context = useContext(MenusContext);
+  if (!context) {
+    throw new Error("Window must be used within a ModalProvider");
+  }
+  const { openId, position, close } = context;
+
   const ref = useOutsideClick(close, false);
 
   if (openId !== id) return null;
@@ -119,8 +152,20 @@ function List({ id, children }) {
   );
 }
 
-function Button({ children, icon, onClick }) {
-  const { close } = useContext(MenusContext);
+function Button({
+  children,
+  icon,
+  onClick,
+}: {
+  children: ReactNode;
+  icon?: ReactNode;
+  onClick?: () => void;
+}) {
+  const context = useContext(MenusContext);
+  if (!context) {
+    throw new Error("Window must be used within a ModalProvider");
+  }
+  const { close } = context;
 
   function handleClick() {
     onClick?.();
