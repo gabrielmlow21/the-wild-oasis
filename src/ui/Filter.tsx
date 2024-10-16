@@ -11,7 +11,9 @@ const StyledFilter = styled.div`
   gap: 0.4rem;
 `;
 
-const FilterButton = styled.button`
+const FilterButton = styled.button<{
+  active: boolean;
+}>`
   background-color: var(--color-grey-0);
   border: none;
 
@@ -35,23 +37,38 @@ const FilterButton = styled.button`
   }
 `;
 
-export default function Filter() {
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface FilterProps {
+  filterField: string;
+  options: Option[];
+}
+
+export default function Filter({ filterField, options }: FilterProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  function handleClick(value: "all" | "no-discount" | "with-discount") {
-    searchParams.set("discount", value);
+  // options.at(0).value is the first option, i.e. all
+  const currentFilter = searchParams.get(filterField) || options?.at(0)?.value;
+
+  function handleClick(value: string) {
+    searchParams.set(filterField, value);
     setSearchParams(searchParams);
   }
 
   return (
     <StyledFilter>
-      <FilterButton onClick={() => handleClick("all")}>All</FilterButton>
-      <FilterButton onClick={() => handleClick("no-discount")}>
-        No discount
-      </FilterButton>
-      <FilterButton onClick={() => handleClick("with-discount")}>
-        With discount
-      </FilterButton>
+      {options.map((option) => (
+        <FilterButton
+          key={option.value}
+          onClick={() => handleClick(option.value)}
+          active={currentFilter === option.value}
+        >
+          {option.label}
+        </FilterButton>
+      ))}
     </StyledFilter>
   );
 }
