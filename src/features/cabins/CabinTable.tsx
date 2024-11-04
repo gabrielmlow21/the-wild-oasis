@@ -13,7 +13,7 @@ export default function CabinTable() {
 
   if (isLoading) return <Spinner />;
 
-  if (!cabins) return <Empty resource="bookings" />;
+  if (!cabins) return <Empty resource="cabins" />;
 
   // 1) FILTER
   const filterValue = searchParams.get("discount") || "all";
