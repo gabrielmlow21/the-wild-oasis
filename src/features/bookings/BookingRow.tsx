@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { format, isToday } from "date-fns";
+import { Status } from "../../types/booking";
 
 import Tag from "../../ui/Tag";
 import Table from "../../ui/Table";
@@ -48,7 +49,7 @@ function BookingRow({
     cabins: { name: cabin_name },
   },
 }) {
-  const statusToTagName = {
+  const statusToTagName: Record<Status, string> = {
     unconfirmed: "blue",
     "checked-in": "green",
     "checked-out": "silver",
@@ -76,7 +77,9 @@ function BookingRow({
         </span>
       </Stacked>
 
-      <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
+      <Tag type={statusToTagName[status as Status]}>
+        {status.replace("-", " ")}
+      </Tag>
 
       <Amount>{formatCurrency(total_price)}</Amount>
     </Table.Row>
